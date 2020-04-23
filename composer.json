@@ -1,0 +1,13 @@
+{
+    "name": "ariel.andrade/delivery-dish",
+    "description": "Proyecto mutable de delivery",
+    "authors": [
+        {
+            "name": "Ariel Andrade",
+            "email": "ariel.andrade@dish.com.mx"
+        }
+    ],
+    "require": {
+        "vlucas/phpdotenv": "^4.1"
+    }
+}
