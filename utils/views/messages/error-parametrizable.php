@@ -4,8 +4,8 @@
         <div class="card-header">
             <h3>
                 <?php 
-                    if(isset($error_parametrizable_title)){
-                        echo $error_parametrizable_title;
+                    if(isset($error_parametrizable_titu)){
+                        echo $error_parametrizable_titu;
                     }else{
                         echo "Error";
                     }
@@ -16,15 +16,15 @@
             <form>
                 <p class="lead text-muted">
                     <?php 
-                        if(isset($error_parametrizable_msg)){
-                            echo $error_parametrizable_msg;
+                        if(isset($error_parametrizable_mens)){
+                            echo $error_parametrizable_mens;
                         }else{
                             echo "Error en el aplicativo";
                         }
                     ?>
                 </p>
                 <br>
-                <a class="btn btn-success btn-sm" href="/"></a>
+                <a class="btn btn-success btn-sm" href="<?php echo isset($error_parametrizable_enlc)?$error_parametrizable_enlc:"/";?>"><?php echo isset($error_parametrizable_botn)?$error_parametrizable_botn:"ir al inicio";?></a>
             </form>
         </div>
     </div>

@@ -1,13 +1,22 @@
-<?php 
+<?php
     require $_SERVER['DOCUMENT_ROOT'].'/utils/database/conexionDB.php';
     require $_SERVER['DOCUMENT_ROOT'].'/utils/session/sesion.php';
-    $id = 0;
-    $textQueryBody = 'SELECT * FROM recursos where idPlantilla = '.$id.' ORDER BY tipo';
-    $sqlBody = mysqli_query($con, $textQueryBody);
-    $have_rows = mysqli_num_rows($sqlBody);
-    $rows = [];
-    while($rowB = mysqli_fetch_assoc($sqlBody)){
-        array_push($rows,$rowB);
+?>
+
+<?php //revision de plantilla valida a la sucursal del usuario que solicita
+    $id = isset($_GET['plantilla'])?$_GET['plantilla']:-1;
+
+?>
+
+<?php //seleccion de componentes por id de plantilla
+    $textQueryRecursos = 'SELECT * FROM recursos where idPlantilla = '.$id.' ORDER BY tipo';
+    $sqlRecursos = mysqli_query($con, $textQueryRecursos);
+    $have_rows = mysqli_num_rows($sqlRecursos);
+    $rowsRecursos = [];
+    if($have_rows){
+        while($rowR = mysqli_fetch_assoc($sqlRecursos)){
+            array_push($rowsRecursos,$rowR);
+        }
     }
 ?>
 
@@ -27,34 +36,39 @@
         <script src="http://code.jquery.com/ui/1.10.1/jquery-ui.js"></script>
 
         <link data-require="fontawesome@*" data-semver="4.5.0" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.css" />
-
-        <?php
-            foreach($rows as $row){
-                if($row["tipo"]=="script"){
-        ?>
-        <script src="<?php echo $row["recurso"]?>"></script>          
-        <?php 
-                }
-            }   
-        ?>
     </head>
 
     <body>
-        <?php
+        <?php 
             require $_SERVER['DOCUMENT_ROOT'].'/utils/views/navegador.php';
-            foreach($rows as $row){
-                if($row["tipo"]=="post"){
-                    require $_SERVER['DOCUMENT_ROOT'].$row["recurso"];
-                }
-            }  
-        ?>
-        <?php
-            foreach($rows as $row){
-                if($row["tipo"]=="body"){
-                    require $_SERVER['DOCUMENT_ROOT'].$row["recurso"];
-                }
-            }   
-        ?>
+            if(isset($_SESSION['id_usuario'])){ ?>
+            <?php
+                foreach($rowsRecursos as $row){
+                    if($row["tipo"]=="post"){
+                        require $_SERVER['DOCUMENT_ROOT'].$row["recurso"];
+                    }
+                }  
+            ?>
+            <?php
+                foreach($rowsRecursos as $row){
+                    if($row["tipo"]=="body"){
+                        require $_SERVER['DOCUMENT_ROOT'].$row["recurso"];
+                    }
+                }   
+            ?>
+
+            <?php
+                foreach($rowsRecursos as $row){
+                    if($row["tipo"]=="script"){
+            ?>
+                <script src="<?php echo $row["recurso"]?>"></script>          
+            <?php 
+                    }
+                }   
+            ?>
+        <?php }else{ 
+            require $_SERVER['DOCUMENT_ROOT'].'/utils/views/messages/error-acceso-deslogueado.php';
+        } ?>
     </body>
 
     <!--script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"

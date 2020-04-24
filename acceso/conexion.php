@@ -1,3 +1,8 @@
+<?php 
+    require $_SERVER['DOCUMENT_ROOT'].'/utils/database/conexionDB.php';
+    require $_SERVER['DOCUMENT_ROOT'].'/utils/session/sesion.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
     <head>
@@ -9,25 +14,27 @@
     </head>
     <body>
         <?php 
-            require $_SERVER['DOCUMENT_ROOT'].'/utils/database/conexionDB.php';
-            require $_SERVER['DOCUMENT_ROOT'].'/utils/session/sesion.php';
             require $_SERVER['DOCUMENT_ROOT'].'/utils/views/navegador.php';
         ?>
         <br>
         <div class="container">
-            <?php
+        <?php
                 //iniciarSesion("1","Ariel Andrade","token120941");
-                if(isset($_SESSION['id_usuario'])){
+                if(isset($_SESSION['correo_usuario'])&&isset($_SESSION['id_usuario'])){
                     header("Location:/index.php");
                 }
 
                 if(isset($_POST['acceder'])){
-                    if(isset($_SESSION['id_usuario'])){
-                        //header("Location:/index.php");
+                    if(isset($_SESSION['correo_usuario'])&&isset($_SESSION['id_usuario'])){
+                        header("Location:/index.php");
                     }else{
-                        if(isset($_POST['correo']) && isset($_POST['contrasena'])){
-                            $textQueryBody = "SELECT * FROM usuarios where correo = '".$_POST['correo']."' LIMIT 1";
-
+                        if(isset($_POST['correo']) && isset($_POST['contrasena']) && isset($_POST['tipo'])){
+                            $textQueryBody = null;
+                            if($_POST['tipo'] == "empleado"){
+                                $textQueryBody = "SELECT * FROM empleados where correo = '".$_POST['correo']."' LIMIT 1";
+                            }elseif($_POST['tipo'] == "consumidor"){
+                                //$textQueryBody = "SELECT * FROM consumidores where correo = '".$_POST['correo']."' LIMIT 1";
+                            }
                             $sqlBody = mysqli_query($con, $textQueryBody);
                             $have_rows = mysqli_num_rows($sqlBody);
                             
@@ -37,8 +44,8 @@
                                 while($rowB = mysqli_fetch_assoc($sqlBody)){
                                     if($rowB['contrasena']==$_POST['contrasena']){
                                         if($rowB['estatus']!="Bloqueado"){
-                                            iniciarSesion($rowB['idUsuario'],$rowB['nombre'],$rowB['rol'],$rowB['estatus'],$rowB['idRestaurante']);
-                                            //header("Location:/");
+                                            iniciarSesionEmpleado($rowB['idEmpleado'],$rowB['correo'],$rowB['rol'],$rowB['token'],$rowB['estatus']);
+                                            header("Location:/");
                                         }else{
                                             $error = 'Usuario bloqueado, ponte en contacto con el administrador para mas información';
                                         }
@@ -56,7 +63,7 @@
                         }
                     }
                 }
-            ?>
+        ?>
 
         </div>
         <div class="container d-flex justify-content-center">
@@ -78,6 +85,7 @@
                             <div class="col-md-12 mb-12">
                                 <label class="lead">Contraseña:</label>
                                 <input type="password" class="form-control" name="contrasena" require>
+                                <input type="password" class="form-control" name="tipo" value="empleado" hidden>
                             </div>
                         </div>
                         <br>

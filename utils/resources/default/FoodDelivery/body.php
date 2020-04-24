@@ -16,8 +16,8 @@
             <div class="col-md-3 mb-3">
                 <label>Sucursal</label>
                 <input type="text" class="form-control" disabled value="<?php echo 'sucursal';?>">
-                <input id="varLatitud" type="text" value="<?php echo '19.435278';?>" >
-                <input id="varLongitud" type="text" value="<?php echo '-99.186568';?>" >
+                <input id="varLatitud" type="text" value="<?php echo '19.435278';?>">
+                <input id="varLongitud" type="text" value="<?php echo '-99.186568';?>">
                 <input id="varRangoDistancia" type="text" value="<?php echo '15';?>" >
                 <input id="varRangoTiempo" type="text" value="<?php echo '25';?>" >
             </div>
